@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
-import Loginform from './componant/login/Loginform'
-import Nabvar from './componant/Nabvar'
+import Loginform from './component/login/Loginform'
+import Nabvar from './component/Nabvar'
 
 function App() {
   
