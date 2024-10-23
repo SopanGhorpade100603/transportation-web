@@ -1,0 +1,4 @@
+node -v / node -version 
+v20.15.1
+npm -v (node package manager version)
+10.7.0
