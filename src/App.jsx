@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './App.css'
-import Loginform from './component/login/Loginform'
+import LoginForm from './component/login/LoginForm'
 import Nabvar from './component/Nabvar'
 
 function App() {

@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 
-export default function Loginform() {
+export default function LoginForm() {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
