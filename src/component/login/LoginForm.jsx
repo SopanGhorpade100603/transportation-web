@@ -5,6 +5,7 @@ export default function LoginForm() {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
+  const [responseData, setResponseData] = useState(null)  // to  send data as backend
 
   const handleInputChange = (event) => {
     setFormData((userEnterData) => {
@@ -22,6 +23,19 @@ export default function LoginForm() {
       }));
     }
   };
+
+  const sendDataToFlask= async()=>{  // to send data backend
+    const data = {formData}
+    const response = await fetch('http://127.0.0.1:5000/api/data',{
+        method:'post',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body:JSON.stringify(data),
+    })
+      const result = await response.json();
+    setFormData({ username: "", password: "" });
+}
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -44,11 +58,13 @@ export default function LoginForm() {
     console.log(formData);
     alert("form was submitted successfull");
     setFormData({ username: "", password: "" });
+    sendDataToFlask();
   };
 
   const viewPassword = () => {
     setShowPassword(!showPassword);
   };
+
   return (
     <>
       <div>
@@ -87,6 +103,7 @@ export default function LoginForm() {
           <button
             type="submit"
             disabled={!formData.username || !formData.password}
+            onSubmit={sendDataToFlask}
           >
             Login
           </button>
