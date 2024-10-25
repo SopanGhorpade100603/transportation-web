@@ -1,4 +1,21 @@
 node -v / node -version 
 v20.15.1
+
 npm -v (node package manager version)
 10.7.0
+
+python --version
+Python 3.13.0
+
+pip show flask  // flask version
+Name: Flask
+Version: 3.0.3
+
+Check Flask-CORS Version
+pip show flask-cors
+Name: Flask-Cors
+Version: 5.0.0
+
+ Check Flask-MySQL (or Flask-MySQLdb) Version
+pip list | grep -E 'flask|python|mysql|cors'
+mysql-connector-python 9.1.0
