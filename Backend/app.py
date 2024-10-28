@@ -1,6 +1,7 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
+from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
 
@@ -17,27 +18,43 @@ CORS(app)  # Enable CORS for the entire app
 @app.route('/api/data', methods=['POST'])
 def receive_data():
     data = request.get_json()
-    print('data is',data)
-    username = data['formData']['username']
-    password = data['formData']['password']
-    print("username is *** ", username)
-    print("password is ***** ", password)
+    print('Received data:', data)
 
-    # Connect to the database
+    if 'formData' not in data:
+        return jsonify({'message': 'Invalid request data'}), 400
+
+    username = data['formData'].get('username')
+    password = data['formData'].get('password')
+
+    if not username or not password:
+        return jsonify({'message': 'Username and password are required'}), 400
+
+    print("Username is:", username)
+    print("Password is:", password)
+
     try:
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor()
 
-        insert_query = "INSERT INTO userdata (username, password) VALUES (%s, %s)"
-        cursor.execute(insert_query, (username, password))
-        connection.commit()
+        cursor.execute("SELECT * FROM userdata WHERE username = %s AND password = %s", (username, password))
 
-        return jsonify({'message': 'Data Saved Successfully!'}), 201
-    except mysql.connector.Error as err:  # Fixed exception handling to catch the correct Error type
-        return jsonify({'error': str(err)}), 500  # Corrected key 'error ' to 'error'
+        result = cursor.fetchall()
+        print('Query result:', result) 
+        if result != []:
+            print("Login successful")
+            return jsonify({'message': 'Login successful','statusCode':200}), 200
+        else:
+            print("User not found")
+            return jsonify({'message': 'User not found','statusCode':404}), 404
+
+    except mysql.connector.Error as err:
+        print(f"Database error: {err}")
+        return jsonify({'message': 'Database error'}), 500
+
     finally:
-        if connection.is_connected():
+        if cursor:
             cursor.close()
+        if connection.is_connected():
             connection.close()
 
 if __name__ == '__main__':

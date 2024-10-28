@@ -1,11 +1,14 @@
 import React from "react";
 import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
-  const [responseData, setResponseData] = useState(null)  // to  send data as backend
+  const [responseData, setResponseData] = useState(null); // to  send data as backend
+  const [status, setStatus] = useState("");
+  const navigate = useNavigate();
 
   const handleInputChange = (event) => {
     setFormData((userEnterData) => {
@@ -24,20 +27,21 @@ export default function LoginForm() {
     }
   };
 
-  const sendDataToFlask= async()=>{  // to send data backend
-    const data = {formData}
-    const response = await fetch('http://127.0.0.1:5000/api/data',{
-        method:'post',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body:JSON.stringify(data),
-    })
-      const result = await response.json();
+  const sendDataToFlask = async () => {
+    // to send data backend
+    const data = { formData };
+    const response = await fetch("http://127.0.0.1:5000/api/data", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
     setFormData({ username: "", password: "" });
-}
+  };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!formData.username || !formData.password) {
       // Check if any field is empty before submission
@@ -55,10 +59,35 @@ export default function LoginForm() {
       }
       return; // Prevent form submission if there are errors
     }
-    console.log(formData);
-    alert("form was submitted successfull");
-    setFormData({ username: "", password: "" });
+    // console.log(formData);
+    setFormData({ username: "", password: "", status: "" });
     sendDataToFlask();
+
+    try {
+      // Making a POST request to the Flask backend
+      const response = await fetch("http://127.0.0.1:5000/api/data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ formData }), // Send formData in the request body
+      });
+      const data = await response.json();
+      console.log("data is *** ", data);
+
+      // Check if login is successful or not
+      if (data.statusCode === 200) {
+        setStatus("Login successful!");
+        navigate("/dashboard");
+        {
+          /* Use navigate to Route the main page  */
+        }
+      } else {
+        setStatus("Invalid username or password.");
+      }
+    } catch (error) {
+      setStatus("Error: Could not connect to server");
+    }
   };
 
   const viewPassword = () => {
@@ -100,6 +129,11 @@ export default function LoginForm() {
             ></i>
             {errors.password && <div className="error">{errors.password}</div>}
           </div>
+          {status && (
+            <div className="status">
+              <p>{status}</p>
+            </div>
+          )}
           <button
             type="submit"
             disabled={!formData.username || !formData.password}
@@ -109,6 +143,12 @@ export default function LoginForm() {
           </button>
         </form>
       </div>
+      <h4 className="signup-prompt">
+        If you are a new user?{" "}
+        <NavLink to="/signup" className="signup-link">
+          Signup now
+        </NavLink>
+      </h4>
     </>
   );
 }
