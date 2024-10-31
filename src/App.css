@@ -24,7 +24,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  width: 100%;
   font-size: 20px;
   color: #fff;
 }
@@ -176,19 +175,25 @@ button:disabled {
   padding-bottom: 7px;
 }
 
-/* style for redirect signup page  */
-
-.signup-prompt {
-  color: #444;          
-  margin-top: 25px;       
-  text-align: left;     
- font-size: 18px;
- position: relative;
- top: -50px;
- left: 10px;
+.signup-error{
+  margin-top: 5%;
+  justify-content: center;
+  display: flex;
+  font-size: large;
+  margin-bottom: -20px;
 }
 
-/* Styling the Signup link */
+/* style for redirect signup page  */
+.signup-prompt {
+  color: #444;          
+  margin-top: 10%;       
+  text-align: left;     
+  font-size: 1.2em;
+  position: relative;
+  top: -50px;
+  left: 10px;
+}
+
 .signup-link {
   color: #3498db;       
   font-weight: 500;       
@@ -201,4 +206,24 @@ button:disabled {
   color: #2980b9;         
   border-bottom-color: #2980b9; 
   cursor: pointer;     
+}
+
+/* logout btn  */
+.logout-btn {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  width: 7%;
+  display: flex;
+  align-items: center;
+  background-color: #ff5252;
+  border-radius: 4px;
+  margin-left: 10px;
+}
+
+.logout-btn i {
+  margin-left: 8px; 
+  font-size: 18px;
+}
+
+.logout-btn:hover {
+  background-color: #ff7979; /* Hover effect */
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
-export default function LoginForm() {
+export default function LoginForm({ setIsLoggedIn }) {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
@@ -59,7 +59,6 @@ export default function LoginForm() {
       }
       return; // Prevent form submission if there are errors
     }
-    // console.log(formData);
     setFormData({ username: "", password: "", status: "" });
     sendDataToFlask();
 
@@ -78,7 +77,9 @@ export default function LoginForm() {
       // Check if login is successful or not
       if (data.statusCode === 200) {
         setStatus("Login successful!");
-        navigate("/dashboard");
+        setIsLoggedIn(true);         // to render navbar after login
+        localStorage.setItem("isLoggedIn", "true");
+        navigate("/dashboard",{replace:true});
         {
           /* Use navigate to Route the main page  */
         }

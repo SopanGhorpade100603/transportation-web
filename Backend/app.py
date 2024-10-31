@@ -15,7 +15,40 @@ db_config = {
 
 CORS(app)  # Enable CORS for the entire app
 
-@app.route('/api/data', methods=['POST'])
+
+@app.route('/signup/data', methods=['POST']) # get signup data
+# to get ui form data
+def register():
+    data = request.get_json()  
+    print("data is *** ",data)
+    fName = data['fName']
+    lName = data['lName']
+    userName = data['userName']
+    password = data['password']
+    mobileNumber = data['mobileNumber']
+    print(f"fName {fName} lName {lName} username {userName} password {password} mobileNumber {mobileNumber}")
+   
+    #  insert this data to database mysql
+    try:
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+        query = "INSERT INTO userdata (firstName, lastName, username, password, mobileNumber) VALUES (%s, %s, %s, %s, %s)"
+        values = (fName, lName, userName, password, mobileNumber)
+        cursor.execute(query, values)
+        connection.commit() 
+        return jsonify({"message": "User registered successfully!","statusCode":200}), 200
+
+    except mysql.connector.Error as err:
+        print("Database Error:", err)
+        return jsonify({"error": "Failed to register user"}), 400
+
+    finally:
+        cursor.close()
+        connection.close()
+
+
+
+@app.route('/api/data', methods=['POST'])        #login form to check username password exist
 def receive_data():
     data = request.get_json()
     print('Received data:', data)
