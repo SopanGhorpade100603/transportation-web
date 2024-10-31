@@ -2,12 +2,12 @@ import { useState } from 'react'
 import './App.css'
 import LoginForm from './component/login/LoginForm'
 import Navbar from './component/Navbar'
-import { Routes,Route } from 'react-router-dom'
+import { Routes,Route, Navigate  } from 'react-router-dom'
 import Dashboard from './component/Dashboard'
 import SignUp from './component/login/SignUp'
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
  
   function ProtectedRoute({ isLoggedIn, children }) {
     return isLoggedIn ? children : <Navigate to="/" replace />;

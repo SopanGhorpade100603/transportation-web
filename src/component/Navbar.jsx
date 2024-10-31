@@ -1,13 +1,22 @@
-import React from 'react'
+import react from 'react';
+import {useState} from 'react'
 import { useNavigate } from 'react-router-dom';
 
 export default function Navbar({setIsLoggedIn}) {
   const navigate = useNavigate();
+  const [redirectToLogin, setRedirectToLogin] = useState(false);
+
   const handleLogout = () => {
-    setIsLoggedIn(false);
-    localStorage.removeItem("isLoggedIn"); // Clear login state from local storage
-    navigate("/",{ replace: true });
+    const confirmed = window.confirm("Are you sure you want to log out?");
+    if(confirmed){
+      setIsLoggedIn(false);
+       setRedirectToLogin(true); // Set a state to indicate redirect
+    }
   };
+
+  if (redirectToLogin) {
+    navigate("/", { replace: true }); // Use replace to prevent going back
+  }
   return (
     <>
     <div className="navbar">

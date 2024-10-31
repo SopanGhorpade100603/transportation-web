@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function LoginForm({ setIsLoggedIn }) {
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -27,20 +28,6 @@ export default function LoginForm({ setIsLoggedIn }) {
     }
   };
 
-  const sendDataToFlask = async () => {
-    // to send data backend
-    const data = { formData };
-    const response = await fetch("http://127.0.0.1:5000/api/data", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const result = await response.json();
-    setFormData({ username: "", password: "" });
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!formData.username || !formData.password) {
@@ -59,11 +46,10 @@ export default function LoginForm({ setIsLoggedIn }) {
       }
       return; // Prevent form submission if there are errors
     }
-    setFormData({ username: "", password: "", status: "" });
-    sendDataToFlask();
+   // setFormData({ username: "", password: "", status: "" });
 
     try {
-      // Making a POST request to the Flask backend
+      // send data to flask
       const response = await fetch("http://127.0.0.1:5000/api/data", {
         method: "POST",
         headers: {
@@ -80,15 +66,13 @@ export default function LoginForm({ setIsLoggedIn }) {
         setIsLoggedIn(true);         // to render navbar after login
         localStorage.setItem("isLoggedIn", "true");
         navigate("/dashboard",{replace:true});
-        {
-          /* Use navigate to Route the main page  */
-        }
       } else {
         setStatus("Invalid username or password.");
       }
     } catch (error) {
       setStatus("Error: Could not connect to server");
     }
+      
   };
 
   const viewPassword = () => {
@@ -138,7 +122,6 @@ export default function LoginForm({ setIsLoggedIn }) {
           <button
             type="submit"
             disabled={!formData.username || !formData.password}
-            onSubmit={sendDataToFlask}
           >
             Login
           </button>

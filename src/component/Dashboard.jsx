@@ -2,6 +2,8 @@ import React from 'react'
 
 export default function dashboard() {
   return (
-    <div>dashboard</div>
+    <>
+     <h1>Welcome to dashboard !</h1> 
+    </>
   )
 }

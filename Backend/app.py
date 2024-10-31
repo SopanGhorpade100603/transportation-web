@@ -2,6 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 from werkzeug.security import check_password_hash
+from functools import wraps
+import jwt
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -14,7 +17,7 @@ db_config = {
 }
 
 CORS(app)  # Enable CORS for the entire app
-
+app.config['SECRET_KEY'] = 'mcp98'
 
 @app.route('/signup/data', methods=['POST']) # get signup data
 # to get ui form data
@@ -62,9 +65,6 @@ def receive_data():
     if not username or not password:
         return jsonify({'message': 'Username and password are required'}), 400
 
-    print("Username is:", username)
-    print("Password is:", password)
-
     try:
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor()
@@ -72,10 +72,15 @@ def receive_data():
         cursor.execute("SELECT * FROM userdata WHERE username = %s AND password = %s", (username, password))
 
         result = cursor.fetchall()
-        print('Query result:', result) 
+        # print('Query result:', result) 
         if result != []:
             print("Login successful")
-            return jsonify({'message': 'Login successful','statusCode':200}), 200
+            token = jwt.encode({      #create jwt token
+            'user': username,
+            'expiration': str(datetime.utcnow() + timedelta(minutes=50))
+        }, app.config['SECRET_KEY'])
+            print("tokan is ** ",token)
+            return jsonify({'message': 'Login successful','statusCode':200,'access_token':token}), 200
         else:
             print("User not found")
             return jsonify({'message': 'User not found','statusCode':404}), 404
