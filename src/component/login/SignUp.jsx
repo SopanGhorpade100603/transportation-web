@@ -23,7 +23,7 @@ export default function SignUp() {
     setError((prevErrors) => ({ ...prevErrors, [event.target.name]: "" }));
   };
 
-  const sendDataToFlask = async () => {
+  const sendDataToBackend = async () => {
     const data = formData;
     const response = await fetch("http://127.0.0.1:5000/signup/data", {
       method: "post",
@@ -32,12 +32,13 @@ export default function SignUp() {
       },
       body: JSON.stringify(formData),
     });
-     const Code = await response.json();  // to display ui response
+
+    const Code = await response.json(); // to display ui response
     console.log("data is *** ", Code);
-    if(Code.statusCode == 200){
+    if (Code.statusCode == 200) {
       setStatusCode("signup successful!");
-    } else{
-      setStatusCode("unable to store data")
+    } else {
+      setStatusCode("unable to store data");
     }
   };
 
@@ -49,10 +50,8 @@ export default function SignUp() {
         confPassword: "Password does not match",
       }));
       return;
-    }   
-      
-    
-    sendDataToFlask();
+    }
+    sendDataToBackend();
     console.log(
       "fName *** ",
       formData.fName,
@@ -68,13 +67,14 @@ export default function SignUp() {
       formData.mobileNumber
     );
     setformData({
+      // after submit form field is empty
       fName: "",
       lName: "",
       userName: "",
       password: "",
       confPassword: "",
       mobileNumber: "",
-      statusCode:"",
+      statusCode: "",
     });
   };
 
@@ -173,7 +173,6 @@ export default function SignUp() {
             disabled={
               !formData.userName || !formData.password || !formData.confPassword
             }
-            onSubmit={sendDataToFlask}
           >
             SignUp
           </button>

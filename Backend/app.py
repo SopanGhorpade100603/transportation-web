@@ -7,6 +7,7 @@ import jwt
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for the entire app
 
 # Database configuration
 db_config = {
@@ -16,12 +17,11 @@ db_config = {
     'database': 'backofficeagent'
 }
 
-CORS(app)  # Enable CORS for the entire app
 app.config['SECRET_KEY'] = 'mcp98'
 
 @app.route('/signup/data', methods=['POST']) # get signup data
-# to get ui form data
-def register():
+
+def signup():
     data = request.get_json()  
     print("data is *** ",data)
     fName = data['fName']
@@ -52,7 +52,7 @@ def register():
 
 
 @app.route('/api/data', methods=['POST'])        #login form to check username password exist
-def receive_data():
+def login():
     data = request.get_json()
     print('Received data:', data)
 
@@ -80,7 +80,7 @@ def receive_data():
             'expiration': str(datetime.utcnow() + timedelta(minutes=50))
         }, app.config['SECRET_KEY'])
             print("tokan is ** ",token)
-            return jsonify({'message': 'Login successful','statusCode':200,'access_token':token}), 200
+            return jsonify({'message': 'Login successful','statusCode':200,'access_token':token}), 200  # send data to ui 
         else:
             print("User not found")
             return jsonify({'message': 'User not found','statusCode':404}), 404

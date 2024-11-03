@@ -7,7 +7,7 @@ export default function LoginForm({ setIsLoggedIn }) {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
-  const [responseData, setResponseData] = useState(null); // to  send data as backend
+  const [responseData, setResponseData] = useState("");
   const [status, setStatus] = useState("");
   const navigate = useNavigate();
 
@@ -28,10 +28,35 @@ export default function LoginForm({ setIsLoggedIn }) {
     }
   };
 
+  const sendDataToBackend = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ formData }),
+      });
+      const data = await response.json();
+      console.log("data is *** ", data);
+
+      // Check if login is successful or not
+      if (data.statusCode === 200) {
+        setStatus("Login successful!");
+        setIsLoggedIn(true); // to render navbar after login
+        localStorage.setItem("isLoggedIn", "true");
+        navigate("/dashboard", { replace: true });
+      } else {
+        setStatus("Invalid username or password.");
+      }
+    } catch (error) {
+      setStatus("Error: Could not connect to server");
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!formData.username || !formData.password) {
-      // Check if any field is empty before submission
       if (!formData.username) {
         setErrors((prevErrors) => ({
           ...prevErrors,
@@ -46,33 +71,7 @@ export default function LoginForm({ setIsLoggedIn }) {
       }
       return; // Prevent form submission if there are errors
     }
-   // setFormData({ username: "", password: "", status: "" });
-
-    try {
-      // send data to flask
-      const response = await fetch("http://127.0.0.1:5000/api/data", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ formData }), // Send formData in the request body
-      });
-      const data = await response.json();
-      console.log("data is *** ", data);
-
-      // Check if login is successful or not
-      if (data.statusCode === 200) {
-        setStatus("Login successful!");
-        setIsLoggedIn(true);         // to render navbar after login
-        localStorage.setItem("isLoggedIn", "true");
-        navigate("/dashboard",{replace:true});
-      } else {
-        setStatus("Invalid username or password.");
-      }
-    } catch (error) {
-      setStatus("Error: Could not connect to server");
-    }
-      
+    sendDataToBackend();
   };
 
   const viewPassword = () => {
