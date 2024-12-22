@@ -8,6 +8,8 @@ body {
   background-color: #edede9;
   background-image: url("../public/ship.jpg");
   background-size: cover;
+  background-position: center;
+  background-attachment: fixed; /* Ensures background doesn't scroll */
 }
 
 .navbar {
@@ -20,6 +22,7 @@ body {
   display: flex;
   align-items: center;
   padding: 0 20px;
+  z-index: 1000; /* Keep navbar on top */
 }
 
 .navbar-headings {
@@ -74,33 +77,35 @@ body {
 }
 
 form {
-  max-width: 60vh;
-  width: 60vw;
+  max-width: 60vw;
+  width: 60%;
   margin: 50px auto;
   padding: 20px;
   background: white;
   background-image: url("../public/tranport.jpg");
   background-size: cover;
   border-radius: 3%;
+  box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 2px,
+    rgba(255, 255, 255, 0.8) -6px -2px 16px 6px;
 }
 
-.signupForm{
+.signupForm {
   margin-top: 50%;
 }
 
 form:hover {
   box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 2px,
     rgba(255, 255, 255, 0.8) -6px -2px 16px 6px;
-  }
-  
-  label {
-    display: block;
-    color: white;
-    margin: 8px 0;
-    font-weight: bold;
-    position: relative;
-    left: 10px;
-    font-size:larger;
+}
+
+label {
+  display: block;
+  color: white;
+  margin: 8px 0;
+  font-weight: bold;
+  position: relative;
+  left: 10px;
+  font-size: larger;
 }
 
 /* Input field styling */
@@ -174,7 +179,8 @@ button:disabled {
 }
 
 /* Style for error messages */
-.error, .status {
+.error,
+.status {
   color: red;
   font-size: 0.9em;
   margin-bottom: 10px;
@@ -183,7 +189,7 @@ button:disabled {
   font-size: large;
 }
 
-.signup-error{
+.signup-error {
   margin-top: 5%;
   justify-content: center;
   display: flex;
@@ -191,12 +197,12 @@ button:disabled {
   margin-bottom: -20px;
 }
 
-/* style for redirect signup page  */
+/* style for redirect signup page */
 .signup-prompt {
-  color: #444;  
-  width: 90%;        
-  margin-top: 10%;       
-  text-align: left;     
+  color: #444;
+  width: 90%;
+  margin-top: 10%;
+  text-align: left;
   font-size: 1.2em;
   position: relative;
   top: -50px;
@@ -204,20 +210,20 @@ button:disabled {
 }
 
 .signup-link {
-  color: #3498db;       
-  font-weight: 500;       
-  text-decoration: none;  
-  border-bottom: 2px solid transparent; 
-  transition: color 0.3s ease, border-bottom-color 0.3s ease;  
+  color: #3498db;
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.3s ease, border-bottom-color 0.3s ease;
 }
 
 .signup-link:hover {
-  color: #2980b9;         
-  border-bottom-color: #2980b9; 
-  cursor: pointer;     
+  color: #2980b9;
+  border-bottom-color: #2980b9;
+  cursor: pointer;
 }
 
-/* logout btn  */
+/* logout btn */
 .logout-btn {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   width: 7%;
@@ -229,14 +235,76 @@ button:disabled {
 }
 
 .logout-btn i {
-  margin-left: 8px; 
+  margin-left: 8px;
   font-size: 18px;
 }
 
 .logout-btn:hover {
-  background-color: #ff7979; /* Hover effect */
+  background-color: #ff7979;
 }
 
-h1{
+h1 {
   color: white;
+}
+
+/* Mobile Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  .navbar-headings {
+    font-size: 16px;
+  }
+
+  .navbar-headings li {
+    font-size: 14px;
+    margin-left: 15px;
+  }
+
+  .navbar-headings {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  form {
+    width: 90%;
+    max-width: 90vw;
+    margin-top: 100px; /* Add margin-top to prevent overlap with navbar */
+  }
+
+  .signup-prompt {
+    font-size: 1em;
+    margin-top: 10%;
+    top: -20px;
+  }
+
+  /* Adjust form input and button sizes */
+  input, button {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .password-wrapper i {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .navbar-headings li {
+    font-size: 12px;
+    margin-left: 10px;
+  }
+
+  form {
+    padding: 10px;
+  }
+
+  label {
+    font-size: 14px;
+  }
+
+  input {
+    font-size: 14px;
+  }
+
+  button {
+    font-size: 14px;
+  }
 }
