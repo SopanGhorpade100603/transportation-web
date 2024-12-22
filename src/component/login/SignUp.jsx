@@ -1,6 +1,8 @@
-import React from "react";
-import { useState } from "react";
+import React,{ useState } from "react";
 import { NavLink } from "react-router-dom";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "./auth";
+
 
 export default function SignUp() {
   const [formData, setformData] = useState({
@@ -23,22 +25,16 @@ export default function SignUp() {
     setError((prevErrors) => ({ ...prevErrors, [event.target.name]: "" }));
   };
 
-  const sendDataToBackend = async () => {
-    const data = formData;
-    const response = await fetch("http://127.0.0.1:5000/signup/data", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+  const sendDataToFirestore  = async () => {
+    try {
+      // Reference to the Firestore collection
+      const usersCollectionRef = collection(db, "users");
 
-    const Code = await response.json(); // to display ui response
-    console.log("data is *** ", Code);
-    if (Code.statusCode == 200) {
-      setStatusCode("signup successful!");
-    } else {
-      setStatusCode("unable to store data");
+      // Add data to Firestore
+      await addDoc(usersCollectionRef, formData);
+      alert("User data added to Firestore");
+    } catch (error) {
+      alert("Error adding user to Firestore:", error);
     }
   };
 
@@ -51,7 +47,7 @@ export default function SignUp() {
       }));
       return;
     }
-    sendDataToBackend();
+    sendDataToFirestore ();
     console.log(
       "fName *** ",
       formData.fName,

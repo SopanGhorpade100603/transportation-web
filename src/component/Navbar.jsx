@@ -1,4 +1,3 @@
-import react from 'react';
 import {useState} from 'react'
 import { useNavigate } from 'react-router-dom';
 
@@ -22,7 +21,7 @@ export default function Navbar({setIsLoggedIn}) {
     <div className="navbar">
     <div className='navbar-headings'>
         <ul>
-        <li>Back Office Agent</li>         
+        <li>Transport</li>         
         </ul>     
     </div>
     <button className='logout-btn' onClick={handleLogout}>logout

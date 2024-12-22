@@ -1,56 +1,58 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { collection, getDocs, query, where } from "firebase/firestore"; 
+import { db } from "./auth";
 
 export default function LoginForm({ setIsLoggedIn }) {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
-  const [responseData, setResponseData] = useState("");
   const [status, setStatus] = useState("");
   const navigate = useNavigate();
 
   const handleInputChange = (event) => {
-    setFormData((userEnterData) => {
-      return { ...userEnterData, [event.target.name]: event.target.value };
-    });
+    setFormData((userEnterData) => ({
+      ...userEnterData,
+      [event.target.name]: event.target.value,
+    }));
     setErrors((prevErrors) => ({ ...prevErrors, [event.target.name]: "" }));
   };
 
   const handleBlur = (event) => {
-    // Check if the input field is empty
     if (!event.target.value) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        [event.target.name]: `Please enter your ${event.target.name}`, // Set an appropriate error message
+        [event.target.name]: `Please enter your ${event.target.name}`,
       }));
     }
   };
 
-  const sendDataToBackend = async () => {
+  const authenticateUser = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/data", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ formData }),
-      });
-      const data = await response.json();
-      console.log("data is *** ", data);
+      // Reference to the Firestore collection
+      const usersCollectionRef = collection(db, "users");
 
-      // Check if login is successful or not
-      if (data.statusCode === 200) {
-        setStatus("Login successful!");
-        setIsLoggedIn(true); // to render navbar after login
-        localStorage.setItem("isLoggedIn", "true");
-        navigate("/dashboard", { replace: true });
+      // Query to find the user with the given username
+      const q = query(usersCollectionRef, where("userName", "==", formData.username));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0].data();
+        
+        // Check if the password matches
+        if (userDoc.password === formData.password) {
+          setStatus("Login successful!");
+          setIsLoggedIn(true); 
+          navigate("/dashboard"); // Navigate to dashboard
+        } else {
+          setStatus("Invalid password");
+        }
       } else {
-        setStatus("Invalid username or password.");
+        setStatus("User not found");
       }
     } catch (error) {
-      setStatus("Error: Could not connect to server");
+      setStatus("Login failed. Please check your credentials.");
+      console.error("Error logging in: ", error);
     }
   };
 
@@ -69,14 +71,13 @@ export default function LoginForm({ setIsLoggedIn }) {
           password: "Please enter your password",
         }));
       }
-      return; // Prevent form submission if there are errors
+      return;
     }
-    sendDataToBackend();
+    await authenticateUser ();
+    setFormData({ username: "", password: "" });
   };
 
-  const viewPassword = () => {
-    setShowPassword(!showPassword);
-  };
+  const viewPassword = () => setShowPassword(!showPassword);
 
   return (
     <>
@@ -97,7 +98,7 @@ export default function LoginForm({ setIsLoggedIn }) {
           <div className="password-wrapper">
             <label htmlFor="password">Password</label>
             <input
-              type={showPassword ? "text" : "password"} // Toggle between password and text
+              type={showPassword ? "text" : "password"}
               placeholder="password"
               value={formData.password}
               id="password"
@@ -114,14 +115,11 @@ export default function LoginForm({ setIsLoggedIn }) {
             {errors.password && <div className="error">{errors.password}</div>}
           </div>
           {status && (
-            <div className="status">
+            <div className={`status ${status.includes("failed") ? "error" : "success"}`}>
               <p>{status}</p>
             </div>
           )}
-          <button
-            type="submit"
-            disabled={!formData.username || !formData.password}
-          >
+          <button type="submit" disabled={!formData.username || !formData.password}>
             Login
           </button>
         </form>

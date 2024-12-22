@@ -5,7 +5,9 @@
 }
 
 body {
-  background-color: #caf0fe;
+  background-color: #edede9;
+  background-image: url("../public/ship.jpg");
+  background-size: cover;
 }
 
 .navbar {
@@ -72,11 +74,13 @@ body {
 }
 
 form {
-  max-width: 50vh;
-  width: 50vw;
+  max-width: 60vh;
+  width: 60vw;
   margin: 50px auto;
   padding: 20px;
   background: white;
+  background-image: url("../public/tranport.jpg");
+  background-size: cover;
   border-radius: 3%;
 }
 
@@ -91,10 +95,12 @@ form:hover {
   
   label {
     display: block;
+    color: white;
     margin: 8px 0;
     font-weight: bold;
     position: relative;
     left: 10px;
+    font-size:larger;
 }
 
 /* Input field styling */
@@ -156,7 +162,7 @@ button:disabled {
 .password-wrapper i {
   position: absolute;
   right: 3%;
-  top: 50px;
+  top: 57px;
   transform: translateY(-50%);
   cursor: pointer;
   font-size: 18px;
@@ -173,6 +179,8 @@ button:disabled {
   font-size: 0.9em;
   margin-bottom: 10px;
   padding-bottom: 7px;
+  font-weight: 800;
+  font-size: large;
 }
 
 .signup-error{
@@ -227,4 +235,8 @@ button:disabled {
 
 .logout-btn:hover {
   background-color: #ff7979; /* Hover effect */
+}
+
+h1{
+  color: white;
 }
